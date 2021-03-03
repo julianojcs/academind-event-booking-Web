@@ -1,4 +1,4 @@
-function BookingsPage() {
+const BookingsPage = () => {
   return (
     <div className='container mainContainer'>
       <h1 className='title'>Bookings Page</h1>

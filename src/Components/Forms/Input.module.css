@@ -1,0 +1,41 @@
+.wrapper {
+  margin-bottom: 1rem;
+}
+
+.input {
+  border: 1px solid var(--clr-lightgray);
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.8rem;
+  border-radius: 0.4rem;
+  background: var(--clr-lightgray);
+  transition: 0.2s;
+}
+
+.input:focus,
+.input:hover {
+  outline: none;
+  border-color: var(--clr-secondary);
+  background: white;
+  box-shadow: 0 0 0 3px var(--clr-secondary-light);
+}
+
+.input::selection,
+.input::-moz-selection {
+  background-color: var(--clr-secondary);
+  color: var(--clr-secondary-light);
+}
+
+.label {
+  display: block;
+  font-size: 1rem;
+  line-height: 1;
+  padding-bottom: 0.5rem;
+}
+
+.error {
+  color: #f31;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

@@ -1,0 +1,21 @@
+.auth_form {
+  width: 20rem;
+  max-width: 80%;
+  margin: auto auto;
+}
+
+.container_center {
+  display: flex;
+  align-items: center;
+  max-width: 50rem;
+  padding: 0 1rem;
+  margin: 0 auto;
+  height: calc(100vh - 13rem);
+}
+
+.buttons_control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  justify-content: space-between;
+}

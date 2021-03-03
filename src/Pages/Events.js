@@ -1,4 +1,4 @@
-function EventsPage() {
+const EventsPage = () => {
   return (
     <div className='container mainContainer'>
       <h1 className='title'>Events Page</h1>
