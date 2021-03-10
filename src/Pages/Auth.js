@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { UserContext } from '../UserContext'
-import styles from './Auth.module.css'
+import styled from 'styled-components'
 import Input from '../Components/Forms/Input'
 import Button from '../Components/Forms/Button'
 import useForm from '../Hooks/useForm'
@@ -33,9 +33,9 @@ const AuthPage = (props) => {
 
   return (
     <div className='container mainContainer'>
-      <h1 className='title'>Authentication</h1>
-      <div className={styles.container_center}>
-        <form onSubmit={handleSubmit} className={styles.auth_form}>
+      <h1 className='title'>Login</h1>
+      <div className='container_center'>
+        <Form onSubmit={handleSubmit}>
           <Input label='email' type='email' name='email' {...email} />
           <Input
             label='Password'
@@ -43,7 +43,7 @@ const AuthPage = (props) => {
             name='password'
             {...password}
           />
-          <div className={styles.buttons_control}>
+          <BtnControl>
             {loading ? (
               <>
                 <Button disabled type='button'>
@@ -61,12 +61,25 @@ const AuthPage = (props) => {
                 </Button>
               </>
             )}
-          </div>
+          </BtnControl>
           <Error error={error} />
-        </form>
+        </Form>
       </div>
     </div>
   )
 }
+
+const Form = styled.form`
+  width: 20rem;
+  max-width: 80%;
+  margin: auto auto;
+`
+
+const BtnControl = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  justify-content: space-between;
+`
 
 export default AuthPage

@@ -4,10 +4,7 @@ import { UserContext } from '../UserContext'
 const BookingsPage = () => {
   const { data, login } = useContext(UserContext)
 
-  useEffect(() => {
-    console.log(data?.login.userId)
-    console.log(login)
-  }, [data])
+  useEffect(() => {}, [data])
 
   return (
     <div className='container mainContainer'>

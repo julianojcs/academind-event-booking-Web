@@ -5,7 +5,9 @@ import PageNotFound from './Pages/404'
 import AuthPage from './Pages/Auth'
 import BookingsPage from './Pages/Booking'
 import EventsPage from './Pages/Events'
-import MainNavigation from './Components/Navigation/MainNavigation'
+import MainNavigation from './Components/MainNavigation'
+import Footer from './Components/Footer'
+import ProtectedRoute from './Helper/ProtectedRoute'
 
 function App() {
   return (
@@ -17,11 +19,11 @@ function App() {
             <Redirect exact from='/' to='/auth' />
             <Route exact path='/auth' component={AuthPage} />
             <Route exact path='/events' component={EventsPage} />
-            <Route exact path='/bookings' component={BookingsPage} />
-            <Route exact path='/account' component={BookingsPage} />
+            <ProtectedRoute exact path='/bookings' component={BookingsPage} />
             <Route path='*' component={PageNotFound} />
           </Switch>
         </main>
+        <Footer />
       </UserStorage>
     </BrowserRouter>
   )

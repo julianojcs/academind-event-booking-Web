@@ -60,7 +60,7 @@ export const UserStorage = ({ children }) => {
         window.localStorage.setItem('token', token)
         setLogin(true)
         setData(resData.data)
-        history.push('/account')
+        history.push('/events')
       } else {
         const requestBody = {
           query: `

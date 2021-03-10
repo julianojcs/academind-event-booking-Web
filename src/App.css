@@ -71,6 +71,15 @@ a {
   margin: 0 auto;
 }
 
+.container_center {
+  display: flex;
+  align-items: center;
+  max-width: 50rem;
+  padding: 0 1rem;
+  margin: 0 auto;
+  height: calc(100vh - 15rem);
+}
+
 .mainContainer {
   margin-top: 2rem;
 }
