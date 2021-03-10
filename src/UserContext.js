@@ -27,41 +27,70 @@ export const UserStorage = ({ children }) => {
     // [navigate]
   )
 
-  const userLogin = async (email, password) => {
+  const userLogin = async (email, password, isLogin=true) => {
     try {
       setError(null)
       setLoading(true)
+      let resData
 
-      const requestBody = {
-        query: `
-          query {
-            login(email: "${email}", password: "${password}"){
-              userId email token tokenExpiration
+      if (isLogin) {
+        const requestBody = {
+          query: `
+            query {
+              login(email: "${email}", password: "${password}"){
+                userId email token tokenExpiration
+              }
             }
+          `
+        }
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
           }
-        `
+        })
+        if (response.status !== 200 && response.status !== 201) {
+          throw new Error(`Error ${response.status}: Invalid email or password!`)
+        }
+        resData = await response.json()
+        const json = resData.data.login
+        const { token } = json
+        window.localStorage.setItem('token', token)
+        setLogin(true)
+        setData(resData.data)
+        history.push('/account')
+      } else {
+        const requestBody = {
+          query: `
+            mutation {
+              createUser(userInput: {email: "${email}", password: "${password}"}) {
+                _id
+                email
+              }
+            }`,
+          variables: {},
+        }
+        const response = await fetch('http://localhost:8000/graphql', {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          mode: 'cors',
+          headers: { 
+            'Content-Type': 'application/json;charset=utf-8' 
+          },
+        })
+        if (response.status !== 200 && response.status !== 201) {
+          throw new Error(`Error ${response.status}: Invalid email or password!`)
+        }
+        resData = await response.json()
+        if (resData.errors) {
+          throw new Error(resData.errors[0].message)
+        } else {
+          return resData.data.createUser
+        }
       }
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        }
-      })
-      if (response.status !== 200 && response.status !== 201) {
-        throw new Error(`Error ${response.status}: Invalid email or password!`)
-      }
-      const resData = await response.json()
-      const json = resData.data.login
-      // console.log(json)
-      const { token } = json
-      // console.log(token)
-      window.localStorage.setItem('token', token)
-      setData(resData.data)
-      setLogin(true)
-      history.push('/account')
     } catch (err) {
       setError(err.message)
       setLogin(false)

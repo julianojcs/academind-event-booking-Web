@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { UserContext } from '../UserContext'
 import styles from './Auth.module.css'
 import Input from '../Components/Forms/Input'
@@ -8,36 +8,26 @@ import Error from '../Helper/Error';
 
 const AuthPage = (props) => {
 
+  const [isLogin, setIsLogin] = useState(true)
+
   const email = useForm('email') // useForm(false) -> no validation
   const password = useForm() // useForm() -> input value is required
 
   const {  userLogin, error, loading  } = useContext(UserContext)
 
+  const switchModeHandler = () => {
+    setIsLogin(!isLogin)
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    // const requestBody = {
-    //   query: `
-    //     mutation {
-    //       createUser(userInput: {email: "${email}", password: "${password}"}) {
-    //         _id
-    //         email
-    //       }
-    //     }`,
-    //   variables: {},
-    // }
-
-    // fetch('http://localhost:8000/graphql', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(requestBody),
-    // })
-    //   .then(res => res.json())
-    //   .then(res => console.log(res.data))
-
-
     if (email.validate() && password.validate()) {
-      userLogin(email.value, password.value)
+      const result = await userLogin(email.value, password.value, isLogin)
+      if (result) {
+        setIsLogin(!isLogin)
+        userLogin(email.value, password.value)
+      }
     }
   }
 
@@ -46,22 +36,31 @@ const AuthPage = (props) => {
       <h1 className='title'>Authentication</h1>
       <div className={styles.container_center}>
         <form onSubmit={handleSubmit} className={styles.auth_form}>
-          <Input label='email' type='email' name='email' {...email}
-          />
-          <Input label='Password' type='password' name='password' {...password}
+          <Input label='email' type='email' name='email' {...email} />
+          <Input
+            label='Password'
+            type='password'
+            name='password'
+            {...password}
           />
           <div className={styles.buttons_control}>
             {loading ? (
               <>
-                <Button disabled type="button">Sing-up</Button>
+                <Button disabled type='button'>
+                  Sing-up
+                </Button>
                 <Button disabled>Carregando...</Button>
               </>
             ) : (
               <>
-                <Button type="button">Sing-up</Button>
-                <Button type="submit" onClick={handleSubmit}>Submit</Button>
+                <Button type='button' onClick={switchModeHandler}>
+                  Switch to {isLogin ? 'SignUp' : 'Login'}
+                </Button>
+                <Button type='submit' onClick={handleSubmit}>
+                  Submit
+                </Button>
               </>
-            )}            
+            )}
           </div>
           <Error error={error} />
         </form>
