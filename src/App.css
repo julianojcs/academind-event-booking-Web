@@ -32,6 +32,7 @@ body {
 main {
   margin: 5rem 2.5rem 0;
   padding: 0;
+  overflow-y: auto;
 }
 
 h1,
@@ -73,6 +74,7 @@ a {
 
 .container_center {
   display: flex;
+  flex-direction: column;
   align-items: center;
   max-width: 50rem;
   padding: 0 1rem;
@@ -87,6 +89,14 @@ a {
 @media all and (min-width: 40rem) {
   .mainContainer {
     margin-top: 4rem;
+  }
+}
+
+@media all and (max-width: 50rem) {
+  main {
+    margin: 3rem 0 6.5rem;
+    padding: .5rem 0;
+    overflow-y: auto;
   }
 }
 

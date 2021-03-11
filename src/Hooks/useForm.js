@@ -13,6 +13,10 @@ const types = {
   number: {
     regex: /^\d+$/,
     message: 'Utilize apenas números.'
+  },
+  decimal: {
+    regex: /^\d+(\.\d{1,2})?$/,
+    message: 'Utilize apenas número com até 2 casas decimais.'
   }
 }
 

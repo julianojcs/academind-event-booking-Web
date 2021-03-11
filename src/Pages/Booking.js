@@ -8,9 +8,11 @@ const BookingsPage = () => {
 
   return (
     <div className='container mainContainer'>
-      <h1 className='title'>Bookings Page</h1>
-      <p>{data && data.login.email}</p>
-      <p>{login ? 'true' : 'false'}</p>
+      <h1 className='title'>Bookings</h1>
+      <div className='container_center'>
+        <p>{data && data.login.email}</p>
+        <p>{login ? 'true' : 'false'}</p>
+      </div>
     </div>
   )
 }

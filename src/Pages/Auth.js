@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Input from '../Components/Forms/Input'
 import Button from '../Components/Forms/Button'
 import useForm from '../Hooks/useForm'
-import Error from '../Helper/Error';
+import Error from '../Helper/Error'
 
 const AuthPage = (props) => {
 
@@ -13,7 +13,7 @@ const AuthPage = (props) => {
   const email = useForm('email') // useForm(false) -> no validation
   const password = useForm() // useForm() -> input value is required
 
-  const {  userLogin, error, loading  } = useContext(UserContext)
+  const { userLogin, error, loading } = useContext(UserContext)
 
   const switchModeHandler = () => {
     setIsLogin(!isLogin)

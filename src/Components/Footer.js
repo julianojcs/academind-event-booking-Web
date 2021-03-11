@@ -18,6 +18,10 @@ const FooterContainer = styled.footer`
   text-align: center;
   color: var(--clr-lightgray);
   overflow: hidden;
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  z-index: 40;
   p {
     margin-top: 0.5rem;
     pointer-events: none;

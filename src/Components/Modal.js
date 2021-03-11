@@ -1,32 +1,59 @@
-import { useContext, useState } from 'react'
-import { UserContext } from '../UserContext'
 import styled from 'styled-components'
-import Input from '../Components/Forms/Input'
 import Button from '../Components/Forms/Button'
-import useForm from '../Hooks/useForm'
-import Error from '../Helper/Error'
+import useOutsideClick from '../Hooks/useOutsideClick'
+import { useRef } from 'react'
+
 
 function Modal(props) {
+  const ref = useRef()
+
+  useOutsideClick(ref, () => {
+    if (props.show) props.onCancel()
+  })
+
   return (
-    <ModalContainer>
-      <Header>
-        <h1>{props.title}</h1>
-      </Header>
-      <Content>{props.children}</Content>
-      <Actions>
-        {props.canCancel && <Button onClick={props.onCancel}>Cancel</Button>}
-        {props.canConfirm && <Button onClick={props.onConfirm}>Confirm</Button>}
-      </Actions>
-    </ModalContainer>
+    props.show && ((
+      <>
+        <BackdropContainer></BackdropContainer>
+        <ModalContainer ref={ref}>
+          <Header>
+            <h1>{props.title}</h1>
+          </Header>
+          <Content>{props.children}</Content>
+          <Actions>
+            {props.canCancel && (
+            (
+            <Button onClick={props.onCancel}>Cancel</Button>
+          )
+          )}
+            {props.canConfirm && (
+            (
+            <Button onClick={props.onConfirm}>Confirm</Button>
+          )
+          )}
+          </Actions>
+        </ModalContainer>
+      </>
+    )
+    )
   )
 }
+
+const BackdropContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 50;
+`
 
 const ModalContainer = styled.div`
   width: 90%;
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  position: fixed;
-  top: 20vh;
+  position: absolute;
   left: 5%;
   z-index: 100;
   border-radius: 5px;
@@ -35,6 +62,14 @@ const ModalContainer = styled.div`
   @media (min-width: 768px) {
     width: 30rem;
     left: calc((100% - 30rem) / 2);
+  }
+  @media (max-width: 768px) {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 0;
   }
 `
 

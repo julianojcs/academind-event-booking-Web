@@ -3,11 +3,11 @@ import { NavLink } from 'react-router-dom'
 import { UserContext } from '../UserContext'
 import styled from 'styled-components'
 
-const MainNavigation = (props) => {
+const Header = (props) => {
   const { data, userLogout } = useContext(UserContext)
 
   return (
-    <Header>
+    <HeaderContainer>
       <Logo>
         <h1>EasyEvent</h1>
       </Logo>
@@ -32,11 +32,11 @@ const MainNavigation = (props) => {
           )}
         </ul>
       </Nav>
-    </Header>
+    </HeaderContainer>
   )
 }
 
-const Header = styled.header`
+const HeaderContainer = styled.header`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -48,6 +48,7 @@ const Header = styled.header`
   height: 3.5rem;
   background: var(--clr-primary-dark);
   padding: 0 1rem;
+  z-index: 40;
   box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%),
     0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   h1 {
@@ -104,4 +105,4 @@ const Nav = styled.div`
   }
 `
 
-export default MainNavigation
+export default Header
