@@ -30,9 +30,10 @@ body {
 }
 
 main {
-  margin: 5rem 2.5rem 0;
+  margin: 3.5rem 2.5rem 6rem;
   padding: 0;
   overflow-y: auto;
+  height: calc(100vh - 9.5rem);
 }
 
 h1,
@@ -79,24 +80,23 @@ a {
   max-width: 50rem;
   padding: 0 1rem;
   margin: 0 auto;
-  height: calc(100vh - 15rem);
+  height: calc(100% - 5rem);
 }
 
 .mainContainer {
-  margin-top: 2rem;
+  margin-top: 0;
+  overflow-y: hidden;
+  height: 100%;
 }
-
-@media all and (min-width: 40rem) {
-  .mainContainer {
-    margin-top: 4rem;
-  }
-}
-
 @media all and (max-width: 50rem) {
   main {
     margin: 3rem 0 6.5rem;
     padding: .5rem 0;
     overflow-y: auto;
+  }
+  .container_center {
+    padding: 0;
+    height: 100%;
   }
 }
 

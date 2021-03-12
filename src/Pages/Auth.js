@@ -33,7 +33,7 @@ const AuthPage = (props) => {
 
   return (
     <div className='container mainContainer'>
-      <h1 className='title'>Login</h1>
+      <h1 className='title'>{isLogin ? 'Login' : 'SignUp'}</h1>
       <div className='container_center'>
         <Form onSubmit={handleSubmit}>
           <Input label='email' type='email' name='email' {...email} />
@@ -73,6 +73,10 @@ const Form = styled.form`
   width: 20rem;
   max-width: 80%;
   margin: auto auto;
+  @media all and (max-width: 50rem) {
+    width: 100%;
+    max-width: 100%;
+  }
 `
 
 const BtnControl = styled.div`

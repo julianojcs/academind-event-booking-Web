@@ -17,6 +17,10 @@ const types = {
   decimal: {
     regex: /^\d+(\.\d{1,2})?$/,
     message: 'Utilize apenas número com até 2 casas decimais.'
+  },
+  datetimeLocal: {
+    regex: /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+    message: 'Informe uma data/hora válida.'
   }
 }
 

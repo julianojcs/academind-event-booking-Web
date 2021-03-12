@@ -6,11 +6,13 @@ import Button from '../Components/Forms/Button'
 import Input from '../Components/Forms/Input'
 import Textarea from '../Components/Forms/Textarea'
 import useForm from '../Hooks/useForm'
+import Error from '../Helper/Error'
 
 const EventsPage = () => {
 
   const [creating, setCreating] = useState(false)
   const [events, setEvents] = useState([])
+  const [error, setError] = useState('')
 
   const context = useContext(UserContext)
 
@@ -19,7 +21,7 @@ const EventsPage = () => {
   const title = useForm()
   const price = useForm('decimal')
   const date = useForm()
-  const description = useForm()
+  const description = useForm('datetimeLocal')
 
 
   const clearModal = () => {
@@ -38,12 +40,23 @@ const EventsPage = () => {
   }
 
   const modalConfirmHandler = async () => {
+    if (
+      !(
+        title.validate() &&
+        price.validate() &&
+        date.validate() &&
+        description.validate()
+      )
+    ) {
+      setError('Fill the form whit valid values!')
+    }
     try {
       const event = {
         title: title.value,
-        price: +price.value.replace(',','.'),
+        price: +price.value.replace(',', '.'),
         date: date.value,
-        description: description.value}
+        description: description.value
+      }
 
       const requestBody = {
         query: `
@@ -60,28 +73,30 @@ const EventsPage = () => {
             }
           }`
       }
-
+      
       const response = await fetch('http://localhost:8000/graphql', {
         method: 'POST',
         body: JSON.stringify(requestBody),
         mode: 'cors',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json;charset=utf-8',
-          'Authorization': 'Bearer ' + token
-        },
+          Authorization: 'Bearer ' + token
+        }
       })
       if (response.status !== 200 && response.status !== 201) {
-        throw new Error(response.err)
+        throw new Error()
       }
       const resData = await response.json()
 
-      events.push(resData.data.createEvent)
-
-      clearModal()
-      
-      setCreating(false)
+      if (resData?.data?.createEvent) {
+        events.push(resData.data.createEvent)
+        clearModal()
+        setCreating(false)
+      } else if (resData?.errors?.length) {
+        throw new Error(resData.errors[0].message)
+      }
     } catch (err) {
-      console.log(err.message)
+      setError(err.message)
     }
 
   }
@@ -120,44 +135,71 @@ const EventsPage = () => {
       setEvents(resData.data.events)
 
     } catch (err) {
-      console.log(err.message)
+      setError(err.message)
     }
   }
 
   return (
     <>
-      <Modal 
-        title='Add Event' 
-        canCancel 
-        canConfirm 
+      <Modal
+        title='Add Event'
+        canCancel
+        canConfirm
         show={creating}
         onCancel={() => setCreating(false)}
         onConfirm={modalConfirmHandler}
       >
         <form>
           <div>
-          <Input label='Title' type='text' name='title' {...title} />
-          <Input label='Price' type='number' name='price' {...price} />
-          <Input label='Date' type='datetime-local' name='date' {...date} />
-          <Textarea label='Description' name='description' rows='4' {...description} />
+            <Input 
+              label='Title' 
+              type='text' 
+              name='title' 
+              {...title} 
+            />
+            <Input 
+              label='Price' 
+              type='number' 
+              name='price' 
+              placeholder='0.00' 
+              min='0' 
+              value='0' 
+              step='1.00' 
+              {...price} 
+            />
+            <Input 
+              label='Date' 
+              type='datetime-local' 
+              name='date' 
+              {...date}
+            />
+            <Textarea
+              label='Description'
+              name='description'
+              rows='4'
+              {...description}
+            />
           </div>
+          {error && <Error error={error} />}
         </form>
       </Modal>
       <div className='container mainContainer'>
         <h1 className='title'>Events</h1>
-          <div className='container_center'>
-            {token && (
-              <EventControl>
-                <Paragraph>Share your own Events!</Paragraph>
-                <Button onClick={startCreateEventHandler}>Create Event</Button>
-              </EventControl>
-            )}
-            <EventsList>
-              {events.map((event) => {
-                return <EventsListItem key={event._id}>{event.title}</EventsListItem>
-              })}
-            </EventsList>
-          </div>
+        <div className='container_center'>
+          {token && (
+            <EventControl>
+              <Paragraph>Share your own Events!</Paragraph>
+              <Button onClick={startCreateEventHandler}>Create Event</Button>
+            </EventControl>
+          )}
+          <EventsList>
+            {events.map((event) => {
+              return (
+                <EventsListItem key={event._id}>{event.title}</EventsListItem>
+              )
+            })}
+          </EventsList>
+        </div>
       </div>
     </>
   )
@@ -165,12 +207,13 @@ const EventsPage = () => {
 
 const EventsList = styled.ul`
   display: grid;
-  row-gap: .5rem;
+  row-gap: 0.5rem;
   width: 40rem;
-  max-width: 90%;
-  margin: 1rem auto;
+  max-width: 100%;
+  margin: 0 auto;
   list-style: none;
   padding: 0;
+  overflow-y: auto;
 `
 
 const EventsListItem = styled.li`
@@ -178,10 +221,12 @@ const EventsListItem = styled.li`
   padding: 1rem;
   border: 1px solid var(--clr-primary);
   border-radius: 5px;
+  @media all and (max-width: 50rem) {
+    padding: 0.5rem;
+  }
 `
 
 const Paragraph = styled.p`
-  margin-block-start: 1em;
   margin-block-end: 1em;
 `
 

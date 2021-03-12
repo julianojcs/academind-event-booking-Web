@@ -17,13 +17,14 @@ const ButtonStyled = styled.button`
   background: var(--clr-secondary);
   color: var(--clr-lightgray);
   min-width: 8rem;
-  padding: 0.8rem 1.2rem;
+  padding: 0.8rem 0.8rem;
   box-sizing: border-box;
   transition: 0.1s;
-  &:hover, 
+  &:hover,
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px var(--clr-secondary-light), 0 0 0 4px var(--clr-secondary-dark);
+    box-shadow: 0 0 0 3px var(--clr-secondary-light),
+      0 0 0 4px var(--clr-secondary-dark);
   }
   &:disabled {
     opacity: 0.5;

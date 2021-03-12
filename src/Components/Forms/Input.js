@@ -55,7 +55,7 @@ const Label = styled.label`
 
 const Error = styled.p`
   color: #f31;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   margin-top: 0.25rem;
 `
 
