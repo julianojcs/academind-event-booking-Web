@@ -8,19 +8,21 @@ import Textarea from '../Components/Forms/Textarea'
 import useForm from '../Hooks/useForm'
 import Error from '../Helper/Error'
 import EventList from '../Components/Events/EventList'
+import Spinner from '../Components/Spinner'
 
 const EventsPage = () => {
   const [creating, setCreating] = useState(false)
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
   const context = useContext(UserContext)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState(null)
   const token = context.data ? context.data.login.token : null
   const userId = context.data ? context.data.login.userId : null
   const title = useForm()
   const price = useForm('decimal')
   const date = useForm()
   const description = useForm('datetimeLocal')
-
 
   const clearModal = () => {
     title.setValue('')
@@ -64,6 +66,7 @@ const EventsPage = () => {
               title
               description
               date
+              price
               creator {
                 _id
                 email
@@ -101,6 +104,7 @@ const EventsPage = () => {
 
   async function fetchEvents() {
     try {
+      setIsLoading(true)
       const requestBody = {
         query: `
         query {
@@ -132,11 +136,23 @@ const EventsPage = () => {
       const resData = await response.json()
 
       setEvents(resData.data.events)
-
     } catch (err) {
       setError(err.message)
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000);
     }
   }
+  
+  const showDetailHendler = (eventId) => {
+    setSelectedEvent( events.find((e) => e._id === eventId ) )
+  }
+
+  const bookEventHandler = (eventId) => {
+
+  }
+
   return (
     <>
       <Modal
@@ -146,6 +162,7 @@ const EventsPage = () => {
         show={creating}
         onCancel={() => setCreating(false)}
         onConfirm={modalConfirmHandler}
+        confirmTextButton='Confirm'
       >
         <form>
           <div>
@@ -174,18 +191,84 @@ const EventsPage = () => {
       <ContainerEvents className='container mainContainer'>
         <h1 className='title'>Events</h1>
         <div className='container_center'>
+        {selectedEvent && (
+          <Modal
+            title={selectedEvent.title}
+            canCancel
+            canConfirm
+            show={selectedEvent!==null}
+            onCancel={() => setSelectedEvent(null)}
+            onConfirm={bookEventHandler}
+            confirmTextButton='Book'
+          >
+            <ContainerDatails>
+              <h2>
+                {new Intl.NumberFormat('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                  minimumFractionDigits: 2
+                  }).format(selectedEvent.price)}
+              </h2>
+              <h3>
+                {selectedEvent.date}
+              </h3>
+              <p>{selectedEvent.description}</p>
+            </ContainerDatails>
+          </Modal>
+        )}
           {token && (
             <EventControl>
               <Paragraph>Share your own Events!</Paragraph>
               <Button onClick={startCreateEventHandler}>Create Event</Button>
             </EventControl>
           )}
-          <EventList events={events} authUserId={context}></EventList>
+          {isLoading ? (
+              <Spinner />
+            ) : (
+              <EventList 
+                events={events} 
+                authUserId={userId} 
+                onViewDetail={showDetailHendler}>
+              </EventList>
+          )}
         </div>
       </ContainerEvents>
     </>
   )
 }
+
+const ContainerDatails = styled.div`
+  margin: 0;
+  display: grid;
+  grid-template-areas: "price data"
+                       "description description";
+  grid-template-rows: 1fr 2fr;
+  grid-template-columns: 150px 1fr;
+
+  & h2 {
+    grid-area: price;
+    justify-self: start;
+  }
+
+  & h3 {
+    grid-area: data;
+    justify-self: end;
+    align-self: end;
+  }
+
+  & p {
+    grid-area: description;
+    justify-self:center;
+    align-self: center;
+    background-color: var(--clr-secondary-light);
+    padding: .5rem;
+    width: 100%;
+    height: 100%;
+    margin-top: 1rem;
+    margin-bottom: -1rem;
+    border-radius: 4px;
+  }
+`
 
 const ContainerEvents = styled.div`
   overflow-y: auto;

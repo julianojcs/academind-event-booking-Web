@@ -3,8 +3,7 @@ import Button from '../../../Forms/Button'
 
 import React from 'react'
 
-function EventItem({ event, userId, creatorId }) {
-  // console.log(userId, creatorId)
+function EventItem({ event, userId, creatorId, onDetail }) {
   return (
     <EventsListItem key={event._id}>
       <div>
@@ -14,14 +13,16 @@ function EventItem({ event, userId, creatorId }) {
             style: 'currency',
             currency: 'BRL',
             minimumFractionDigits: 2
-          }).format(event.price)}
+          }).format(event.price)} - {
+          event.date
+          }
         </h2>
       </div>
       <RigthContent>
         {userId === creatorId ? (
           <p>You are the owner of this event.</p>
         ) : (
-          <ButtonSmall>View Details</ButtonSmall>
+          <ButtonSmall onClick={(e) => onDetail(event._id, e)}>View Details</ButtonSmall>
         )}
       </RigthContent>
     </EventsListItem>

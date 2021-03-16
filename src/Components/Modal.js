@@ -12,7 +12,7 @@ function Modal(props) {
   })
 
   return (
-    props.show && ((
+    props.show && (
       <>
         <BackdropContainer></BackdropContainer>
         <ModalContainer ref={ref}>
@@ -22,19 +22,16 @@ function Modal(props) {
           <Content>{props.children}</Content>
           <Actions>
             {props.canCancel && (
-            (
-            <Button onClick={props.onCancel}>Cancel</Button>
-          )
-          )}
+              <Button onClick={props.onCancel}>Cancel</Button>
+            )}
             {props.canConfirm && (
-            (
-            <Button onClick={props.onConfirm}>Confirm</Button>
-          )
-          )}
+              <Button onClick={props.onConfirm}>
+                {props.confirmTextButton}
+              </Button>
+            )}
           </Actions>
         </ModalContainer>
       </>
-    )
     )
   )
 }
@@ -58,6 +55,7 @@ const ModalContainer = styled.div`
   z-index: 100;
   border-radius: 5px;
   overflow: hidden;
+  z-index: 51;
 
   @media (min-width: 768px) {
     width: 30rem;

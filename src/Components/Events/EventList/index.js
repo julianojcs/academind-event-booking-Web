@@ -3,11 +3,13 @@ import { UserContext } from '../../../UserContext'
 import styled from 'styled-components'
 import EventItem from './EventItem'
 
-function EventList({ events, authUserId }) {
+function EventList({ events, authUserId, onViewDetail }) {
   const context = useContext(UserContext)
-  const userId = context.data ? context.data.login.token : null
-console.log(events);
-console.log(authUserId);
+  const userId = context.data ? context.data.login._id : null
+
+  const onViewDetaila = (eventId) => {
+    console.log(eventId);
+  }
   return (
     <EventsList>
       {events.map((event) => {
@@ -16,6 +18,8 @@ console.log(authUserId);
             key={event._id}
             event={event}
             userId={authUserId}
+            creatorId={event.creator._id}
+            onDetail={onViewDetail}
           />
         )
       })}
