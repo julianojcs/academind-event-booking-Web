@@ -7,17 +7,15 @@ import Input from '../Components/Forms/Input'
 import Textarea from '../Components/Forms/Textarea'
 import useForm from '../Hooks/useForm'
 import Error from '../Helper/Error'
+import EventList from '../Components/Events/EventList'
 
 const EventsPage = () => {
-
   const [creating, setCreating] = useState(false)
   const [events, setEvents] = useState([])
   const [error, setError] = useState('')
-
   const context = useContext(UserContext)
-
   const token = context.data ? context.data.login.token : null
-
+  const userId = context.data ? context.data.login.userId : null
   const title = useForm()
   const price = useForm('decimal')
   const date = useForm()
@@ -110,6 +108,7 @@ const EventsPage = () => {
               _id
               title
               description
+              price
               date
               creator {
                 _id
@@ -138,7 +137,6 @@ const EventsPage = () => {
       setError(err.message)
     }
   }
-
   return (
     <>
       <Modal
@@ -151,28 +149,18 @@ const EventsPage = () => {
       >
         <form>
           <div>
-            <Input 
-              label='Title' 
-              type='text' 
-              name='title' 
-              {...title} 
+            <Input label='Title' type='text' name='title' {...title} />
+            <Input
+              label='Price'
+              type='number'
+              name='price'
+              placeholder='0.00'
+              min='0'
+              value='0'
+              step='1.00'
+              {...price}
             />
-            <Input 
-              label='Price' 
-              type='number' 
-              name='price' 
-              placeholder='0.00' 
-              min='0' 
-              value='0' 
-              step='1.00' 
-              {...price} 
-            />
-            <Input 
-              label='Date' 
-              type='datetime-local' 
-              name='date' 
-              {...date}
-            />
+            <Input label='Date' type='datetime-local' name='date' {...date} />
             <Textarea
               label='Description'
               name='description'
@@ -183,7 +171,7 @@ const EventsPage = () => {
           {error && <Error error={error} />}
         </form>
       </Modal>
-      <div className='container mainContainer'>
+      <ContainerEvents className='container mainContainer'>
         <h1 className='title'>Events</h1>
         <div className='container_center'>
           {token && (
@@ -192,38 +180,15 @@ const EventsPage = () => {
               <Button onClick={startCreateEventHandler}>Create Event</Button>
             </EventControl>
           )}
-          <EventsList>
-            {events.map((event) => {
-              return (
-                <EventsListItem key={event._id}>{event.title}</EventsListItem>
-              )
-            })}
-          </EventsList>
+          <EventList events={events} authUserId={context}></EventList>
         </div>
-      </div>
+      </ContainerEvents>
     </>
   )
 }
 
-const EventsList = styled.ul`
-  display: grid;
-  row-gap: 0.5rem;
-  width: 40rem;
-  max-width: 100%;
-  margin: 0 auto;
-  list-style: none;
-  padding: 0;
+const ContainerEvents = styled.div`
   overflow-y: auto;
-`
-
-const EventsListItem = styled.li`
-  margin: 0;
-  padding: 1rem;
-  border: 1px solid var(--clr-primary);
-  border-radius: 5px;
-  @media all and (max-width: 50rem) {
-    padding: 0.5rem;
-  }
 `
 
 const Paragraph = styled.p`
