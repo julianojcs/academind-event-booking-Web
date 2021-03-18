@@ -81,7 +81,7 @@ const EventsPage = () => {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
-          Authorization: 'Bearer ' + token
+          'Authorization': 'Bearer ' + token
         }
       })
       if (response.status !== 200 && response.status !== 201) {
@@ -149,8 +149,46 @@ const EventsPage = () => {
     setSelectedEvent( events.find((e) => e._id === eventId ) )
   }
 
-  const bookEventHandler = (eventId) => {
+  const bookEventHandler = async () => {
+    if (!token) {
+      setSelectedEvent(null)
+      return
+    }
+    try {
+      setIsLoading(true)
+      const requestBody = {
+        query: `
+          mutation {
+            bookEvent(eventId: "${selectedEvent._id}") {
+              _id
+              createdAt
+              updatedAt
+            }
+          }`
+      }
 
+      const response = await fetch('http://localhost:8000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        mode: 'cors',
+        headers: { 
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': 'Bearer ' + token
+        },
+      })
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(response.err)
+      }
+      const resData = await response.json()
+console.log(resData);
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setTimeout(() => {
+        setSelectedEvent(null)
+        setIsLoading(false)
+      }, 2000);
+    }
   }
 
   return (
@@ -199,7 +237,7 @@ const EventsPage = () => {
             show={selectedEvent!==null}
             onCancel={() => setSelectedEvent(null)}
             onConfirm={bookEventHandler}
-            confirmTextButton='Book'
+            confirmTextButton={token ? 'Book' : 'Confirm'}
           >
             <ContainerDatails>
               <h2>
